@@ -1,0 +1,95 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Setup Angular Project",
+      "description": "Initialize the project with Tailwind and CDK",
+      "status": "done",
+      "priority": "high",
+      "category": "Infrastructure",
+      "estimate": 3,
+      "createdAt": "2024-03-11T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "title": "Design database schema",
+      "description": "Create the data model for tasks and board columns",
+      "status": "waiting",
+      "priority": "high",
+      "category": "Backend",
+      "estimate": 2,
+      "createdAt": "2024-03-11T11:00:00Z"
+    },
+    {
+      "id": "3",
+      "title": "Implement user authentication",
+      "description": "Add login and registration flow",
+      "status": "backlog",
+      "priority": "high",
+      "category": "Security",
+      "estimate": 8,
+      "createdAt": "2024-03-12T09:00:00Z"
+    },
+    {
+      "id": "4",
+      "title": "Create task card component",
+      "description": "Build the reusable task card for the board",
+      "status": "doing",
+      "priority": "medium",
+      "category": "Frontend",
+      "estimate": 4,
+      "createdAt": "2024-03-12T10:00:00Z"
+    },
+    {
+      "id": "5",
+      "title": "Add drag and drop support",
+      "description": "Integrate Angular CDK drag-drop for moving tasks between columns",
+      "status": "ready",
+      "priority": "medium",
+      "category": "Frontend",
+      "estimate": 5,
+      "createdAt": "2024-03-12T14:00:00Z"
+    },
+    {
+      "id": "6",
+      "title": "Write unit tests for task service",
+      "description": "Cover CRUD operations with unit tests",
+      "status": "backlog",
+      "priority": "low",
+      "category": "Testing",
+      "estimate": 3,
+      "createdAt": "2024-03-13T08:00:00Z"
+    },
+    {
+      "id": "7",
+      "title": "Waiting on API design review",
+      "description": "Need feedback from team on API endpoint structure",
+      "status": "done",
+      "priority": "medium",
+      "category": "Backend",
+      "estimate": 1,
+      "createdAt": "2024-03-13T11:00:00Z"
+    },
+    {
+      "id": "8",
+      "title": "Remove legacy task list view",
+      "description": "The old list view is no longer needed",
+      "status": "rejected",
+      "priority": "low",
+      "category": "Frontend",
+      "estimate": 2,
+      "createdAt": "2024-03-13T15:00:00Z"
+    },
+    {
+      "id": "6b42",
+      "title": "Design database schema",
+      "description": "",
+      "status": "backlog",
+      "priority": "low",
+      "category": "Database",
+      "estimate": 5,
+      "createdAt": "2026-03-11T16:46:07.712Z"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
