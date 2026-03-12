@@ -1,3 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+/* Fix for Angular CDK drag-drop preview transition parsing bug
+   (prevents errors when computed transition-duration/delay lists are mismatched) */
+.cdk-drag-preview,
+.cdk-drag-placeholder {
+  transition-property: none !important;
+  transition-duration: 0ms !important;
+  transition-delay: 0ms !important;
+}

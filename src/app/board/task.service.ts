@@ -1,5 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { tap } from 'rxjs/operators';
 import { Priority, Task, TaskStatus } from './task.model';
 
 const API_URL = 'http://localhost:3000/tasks';
@@ -65,9 +66,16 @@ export class TaskService {
         });
     }
 
-    updateTaskStatus(id: string, status: TaskStatus): void {
-        this.http.patch<Task>(`${API_URL}/${id}`, { status }).subscribe(updated => {
-            this.tasks.update(tasks => tasks.map(t => (t.id === updated.id ? updated : t)));
-        });
+    setTaskStatusLocally(id: string, status: TaskStatus): void {
+        this.tasks.update(tasks => tasks.map(t => (t.id === id ? { ...t, status } : t)));
+    }
+
+    updateTaskStatus(id: string, status: TaskStatus) {
+        return this.http.patch<Task>(`${API_URL}/${id}`, { status }).pipe(
+            tap(updated => {
+                this.tasks.update(tasks => tasks.map(t => (t.id === updated.id ? updated : t)));
+            }),
+        );
     }
 }
+
