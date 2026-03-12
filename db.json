@@ -4,21 +4,30 @@
       "id": "1",
       "title": "Setup Angular Project",
       "description": "Initialize the project with Tailwind and CDK",
-      "status": "rejected",
+      "status": "done",
       "priority": "high",
       "category": "Infrastructure",
       "estimate": 3,
-      "createdAt": "2024-03-11T10:00:00Z"
+      "createdAt": "2024-03-11T10:00:00Z",
+      "tags": [
+        "setup",
+        "infrastructure"
+      ]
     },
     {
       "id": "2",
       "title": "Design database schema",
       "description": "Create the data model for tasks and board columns",
-      "status": "ready",
+      "status": "backlog",
       "priority": "high",
       "category": "Backend",
       "estimate": 2,
-      "createdAt": "2024-03-11T11:00:00Z"
+      "createdAt": "2024-03-11T11:00:00Z",
+      "dueDate": "2026-03-14",
+      "tags": [
+        "backend",
+        "database"
+      ]
     },
     {
       "id": "3",
@@ -28,7 +37,12 @@
       "priority": "high",
       "category": "Security",
       "estimate": 8,
-      "createdAt": "2024-03-12T09:00:00Z"
+      "createdAt": "2024-03-12T09:00:00Z",
+      "dueDate": "2026-03-26",
+      "tags": [
+        "security",
+        "auth"
+      ]
     },
     {
       "id": "5",
@@ -38,57 +52,70 @@
       "priority": "medium",
       "category": "Frontend",
       "estimate": 5,
-      "createdAt": "2024-03-12T14:00:00Z"
+      "createdAt": "2024-03-12T14:00:00Z",
+      "tags": [
+        "ui",
+        "frontend"
+      ]
     },
     {
       "id": "6",
       "title": "Write unit tests for task service",
       "description": "Cover CRUD operations with unit tests",
-      "status": "rejected",
+      "status": "waiting",
       "priority": "low",
       "category": "Testing",
       "estimate": 3,
-      "createdAt": "2024-03-13T08:00:00Z"
-    },
-    {
-      "id": "7",
-      "title": "Waiting on API design review",
-      "description": "Need feedback from team on API endpoint structure",
-      "status": "backlog",
-      "priority": "medium",
-      "category": "Backend",
-      "estimate": 1,
-      "createdAt": "2024-03-13T11:00:00Z"
+      "createdAt": "2024-03-13T08:00:00Z",
+      "dueDate": "2026-03-11",
+      "tags": [
+        "testing"
+      ]
     },
     {
       "id": "8",
       "title": "Remove legacy task list view",
       "description": "The old list view is no longer needed",
-      "status": "ready",
+      "status": "waiting",
       "priority": "low",
       "category": "Frontend",
       "estimate": 2,
-      "createdAt": "2024-03-13T15:00:00Z"
+      "createdAt": "2024-03-13T15:00:00Z",
+      "dueDate": "2026-04-01",
+      "tags": [
+        "cleanup",
+        "frontend"
+      ]
     },
     {
       "id": "6b42",
       "title": "Design database schema",
       "description": "",
-      "status": "waiting",
+      "status": "ready",
       "priority": "low",
       "category": "Database",
       "estimate": 5,
-      "createdAt": "2026-03-11T16:46:07.712Z"
+      "createdAt": "2026-03-11T16:46:07.712Z",
+      "dueDate": "2026-03-21",
+      "tags": [
+        "bug",
+        "be"
+      ]
     },
     {
       "id": "9cc0",
       "title": "Implement user authentication",
       "description": "",
-      "status": "waiting",
+      "status": "done",
       "priority": "medium",
       "category": "Security",
       "estimate": 8,
-      "createdAt": "2026-03-12T02:08:14.358Z"
+      "createdAt": "2026-03-12T02:08:14.358Z",
+      "tags": [
+        "security",
+        "auth"
+      ],
+      "dueDate": "2026-03-14"
     },
     {
       "id": "c5ff",
@@ -98,17 +125,33 @@
       "priority": "medium",
       "category": "Frontend",
       "estimate": 4,
-      "createdAt": "2026-03-12T03:16:06.862Z"
+      "createdAt": "2026-03-12T03:16:06.862Z",
+      "dueDate": "2026-03-13"
     },
     {
-      "id": "1bcd",
+      "id": "9e23",
+      "title": "Waiting on API design review",
+      "description": "fyfkkykyjkygmk",
+      "status": "rejected",
+      "priority": "low",
+      "category": "Backend",
+      "estimate": 1,
+      "createdAt": "2026-03-12T06:52:08.605Z"
+    },
+    {
+      "id": "17e7",
       "title": "ok",
       "description": "",
-      "status": "backlog",
-      "priority": "low",
-      "category": "ok",
-      "estimate": 2,
-      "createdAt": "2026-03-12T03:34:55.742Z"
+      "status": "doing",
+      "priority": "medium",
+      "category": "Backend",
+      "estimate": 4,
+      "dueDate": "2026-03-13",
+      "tags": [
+        "ik",
+        "ok"
+      ],
+      "createdAt": "2026-03-12T09:30:49.893Z"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

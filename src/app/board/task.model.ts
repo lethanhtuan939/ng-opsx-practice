@@ -7,6 +7,8 @@ export interface Task {
     category: string;
     estimate: number;
     createdAt: string;
+    dueDate?: string;
+    tags?: string[];
 }
 
 export type TaskStatus = 'backlog' | 'ready' | 'doing' | 'waiting' | 'done' | 'rejected';

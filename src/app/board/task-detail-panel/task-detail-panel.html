@@ -71,6 +71,19 @@
                 </div>
             </div>
 
+            <div>
+                <label for="task-due-date" class="block text-sm font-medium text-gray-700">Due Date</label>
+                <input id="task-due-date" type="date" formControlName="dueDate"
+                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </div>
+
+            <div>
+                <label for="task-tags" class="block text-sm font-medium text-gray-700">Tags</label>
+                <input id="task-tags" type="text" formControlName="tags" placeholder="e.g. ui, bug, backend"
+                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                <p class="mt-1 text-xs text-gray-400">Comma-separated, e.g. ui, bug, backend</p>
+            </div>
+
             @if (isEditMode() && task()?.createdAt) {
             <div>
                 <p class="text-sm text-gray-500">
@@ -103,4 +116,38 @@
             </div>
         </footer>
     </form>
+
+    <!-- Delete Confirmation Dialog -->
+    @if (showDeleteConfirmation()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <dialog open class="rounded-lg border border-gray-200 bg-white shadow-xl" role="dialog" aria-modal="true" aria-label="Confirm delete task" (keydown.escape)="cancelDelete()">
+            <div class="px-6 py-4">
+                <h3 class="text-lg font-semibold text-gray-900">Delete task?</h3>
+                <p class="mt-2 text-sm text-gray-600">
+                    Are you sure you want to delete "{{ task()?.title }}"? This action cannot be undone.
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-3 border-t border-gray-200 px-6 py-4">
+                <button 
+                    id="delete-cancel-btn"
+                    type="button" 
+                    class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    (click)="cancelDelete()"
+                    [disabled]="isDeleting()">
+                    Cancel
+                </button>
+                <button 
+                    id="delete-confirm-btn"
+                    type="button" 
+                    class="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    (click)="confirmDelete()"
+                    (keydown.enter)="confirmDelete()"
+                    [disabled]="isDeleting()">
+                    Delete
+                </button>
+            </div>
+        </dialog>
+    </div>
+    }
 </aside>

@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { CdkDrag } from '@angular/cdk/drag-drop';
+import { DatePipe } from '@angular/common';
 import { Task } from '../task.model';
 
 @Component({
     selector: 'app-task-card',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [CdkDrag],
+    imports: [CdkDrag, DatePipe],
     host: {
         'class': 'relative block',
         '(keydown.enter)': 'onClick()',
@@ -36,6 +37,27 @@ import { Task } from '../task.model';
           <span class="text-xs text-gray-400">{{ task().estimate }}h</span>
         }
       </div>
+      @if (task().dueDate) {
+        <div class="mt-1.5">
+          <span
+            class="text-xs"
+            [class]="isOverdue() ? 'text-red-600 font-medium' : 'text-gray-400'"
+            [attr.aria-label]="isOverdue() ? 'Overdue: due ' + task().dueDate : 'Due ' + task().dueDate"
+          >
+            {{ isOverdue() ? '⚠ ' : '' }}Due {{ task().dueDate | date:'mediumDate' }}
+          </span>
+        </div>
+      }
+      @if (task().tags?.length) {
+        <div class="mt-1.5 flex flex-wrap gap-1">
+          @for (tag of visibleTags(); track tag) {
+            <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">{{ tag }}</span>
+          }
+          @if (remainingTagCount() > 0) {
+            <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-400">+{{ remainingTagCount() }} more</span>
+          }
+        </div>
+      }
     </div>
   `,
 })
@@ -44,6 +66,17 @@ export class TaskCardComponent {
     readonly select = output<Task>();
 
     readonly isDragging = signal(false);
+
+    readonly isOverdue = computed(() => {
+        const due = this.task().dueDate;
+        if (!due) return false;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return new Date(due) < today;
+    });
+
+    readonly visibleTags = computed(() => (this.task().tags ?? []).slice(0, 3));
+    readonly remainingTagCount = computed(() => Math.max(0, (this.task().tags ?? []).length - 3));
 
     onClick(): void {
         if (!this.isDragging()) {
