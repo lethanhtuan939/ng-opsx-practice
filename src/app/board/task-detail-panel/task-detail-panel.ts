@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { Task, TASK_STATUSES, PRIORITIES } from '../task.model';
+import { Task, TaskStatus, Priority, TASK_STATUSES, PRIORITIES } from '../task.model';
 
 @Component({
     selector: 'app-task-detail-panel',
@@ -32,6 +32,8 @@ export class TaskDetailPanelComponent implements AfterViewInit, OnDestroy {
 
     readonly visible = signal(false);
     readonly isEditMode = computed(() => !!this.task());
+    readonly showDeleteConfirmation = signal(false);
+    readonly isDeleting = signal(false);
 
     private readonly fb = new FormBuilder();
     readonly form = this.fb.nonNullable.group({
@@ -41,6 +43,8 @@ export class TaskDetailPanelComponent implements AfterViewInit, OnDestroy {
         priority: ['medium'],
         category: [''],
         estimate: [0],
+        dueDate: [''],
+        tags: [''],
     });
 
     private triggerElement: Element | null = null;
@@ -57,6 +61,8 @@ export class TaskDetailPanelComponent implements AfterViewInit, OnDestroy {
                 priority: taskData.priority,
                 category: taskData.category,
                 estimate: taskData.estimate,
+                dueDate: taskData.dueDate ?? '',
+                tags: taskData.tags?.join(', ') ?? '',
             });
         }
 
@@ -75,7 +81,22 @@ export class TaskDetailPanelComponent implements AfterViewInit, OnDestroy {
             this.form.markAllAsTouched();
             return;
         }
-        const value = this.form.getRawValue() as Pick<Task, 'title' | 'description' | 'status' | 'priority' | 'category' | 'estimate'>;
+        const raw = this.form.getRawValue();
+        const tags = raw.tags
+            .split(',')
+            .map((t: string) => t.trim().toLowerCase())
+            .filter((t: string) => t.length > 0);
+        const dueDate = raw.dueDate || undefined;
+        const value = {
+            title: raw.title,
+            description: raw.description,
+            status: raw.status as TaskStatus,
+            priority: raw.priority as Priority,
+            category: raw.category,
+            estimate: raw.estimate,
+            dueDate,
+            tags: tags.length > 0 ? tags : undefined,
+        };
         const taskData = this.task();
         if (taskData) {
             this.save.emit({ ...taskData, ...value });
@@ -85,10 +106,26 @@ export class TaskDetailPanelComponent implements AfterViewInit, OnDestroy {
     }
 
     onDeleteClick(): void {
+        this.showDeleteConfirmation.set(true);
+        // Set focus to cancel button after dialog opens
+        requestAnimationFrame(() => {
+            const cancelButton = document.getElementById('delete-cancel-btn');
+            if (cancelButton instanceof HTMLElement) {
+                cancelButton.focus();
+            }
+        });
+    }
+
+    confirmDelete(): void {
         const taskData = this.task();
-        if (taskData && confirm('Are you sure you want to delete this task?')) {
+        if (taskData) {
+            this.isDeleting.set(true);
             this.delete.emit(taskData.id);
         }
+    }
+
+    cancelDelete(): void {
+        this.showDeleteConfirmation.set(false);
     }
 
     onClose(): void {
