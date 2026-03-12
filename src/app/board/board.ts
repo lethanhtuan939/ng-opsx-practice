@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { CdkDropListGroup, CdkDropList, CdkDragDrop } from '@angular/cdk/drag-drop';
+import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
+import { CdkDropListGroup, CdkDropList, CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TaskService } from './task.service';
 import { Task, TaskStatus, TASK_STATUSES } from './task.model';
 import { TaskCardComponent } from './task-card/task-card';
@@ -27,20 +27,74 @@ export class BoardComponent implements OnInit {
     readonly panelOpen = signal(false);
     readonly selectedTask = signal<Task | null>(null);
 
+    readonly tasksVersion = signal(0);
+
+    private readonly tasksByStatusMap = new Map<TaskStatus, Task[]>(
+        TASK_STATUSES.map(status => [status.key, [] as Task[]]),
+    );
+
+    constructor() {
+        effect(() => {
+            const tasks = this.taskService.filteredTasks();
+
+            // Keep stable array references for CDK drop list data
+            for (const status of TASK_STATUSES) {
+                const list = this.tasksByStatusMap.get(status.key)!;
+                list.length = 0;
+            }
+
+            for (const task of tasks) {
+                this.tasksByStatusMap.get(task.status)?.push(task);
+            }
+
+            // Force change detection even though the arrays are stable references
+            this.tasksVersion.update(v => v + 1);
+        });
+    }
+
+    tasksByStatus(status: TaskStatus): Task[] {
+        return this.tasksByStatusMap.get(status) ?? [];
+    }
+
     ngOnInit(): void {
         this.taskService.loadTasks();
     }
 
-    tasksByStatus(status: TaskStatus): Task[] {
-        return this.taskService.filteredTasks().filter(t => t.status === status);
-    }
-
-    drop(event: CdkDragDrop<TaskStatus>): void {
+    drop(event: CdkDragDrop<Task[]>): void {
         if (event.previousContainer === event.container) return;
+
         const task = event.item.data as Task;
-        if (task) {
-            this.taskService.updateTaskStatus(task.id, event.container.data);
+        const previousStatus = task?.status;
+        const newStatus = event.container.id as TaskStatus;
+
+        if (!task || previousStatus === newStatus) return;
+
+        // Update the local arrays used by the CDK lists (stable references)
+        const previousData = event.previousContainer.data as Task[] | undefined;
+        const currentData = event.container.data as Task[] | undefined;
+
+        if (Array.isArray(previousData) && Array.isArray(currentData)) {
+            transferArrayItem(
+                previousData,
+                currentData,
+                event.previousIndex,
+                event.currentIndex,
+            );
         }
+
+        // Persist change to backend (with rollback on failure)
+        this.taskService.setTaskStatusLocally(task.id, newStatus);
+        this.taskService.updateTaskStatus(task.id, newStatus).subscribe({
+            error: () => {
+                this.taskService.setTaskStatusLocally(task.id, previousStatus);
+                transferArrayItem(
+                    event.container.data,
+                    event.previousContainer.data,
+                    event.currentIndex,
+                    event.previousIndex,
+                );
+            },
+        });
     }
 
     openCreatePanel(): void {

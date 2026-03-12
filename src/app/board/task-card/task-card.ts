@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { Task } from '../task.model';
 
@@ -7,10 +7,9 @@ import { Task } from '../task.model';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [CdkDrag],
     host: {
-        'class': 'block',
-        '(click)': 'select.emit(task())',
-        '(keydown.enter)': 'select.emit(task())',
-        '(keydown.space)': '$event.preventDefault(); select.emit(task())',
+        'class': 'relative block',
+        '(keydown.enter)': 'onClick()',
+        '(keydown.space)': '$event.preventDefault(); onClick()',
         'tabindex': '0',
         'role': 'button',
         '[attr.aria-label]': '"Open task: " + task().title',
@@ -20,6 +19,9 @@ import { Task } from '../task.model';
       class="rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:shadow-md focus-visible:outline-2 focus-visible:outline-blue-500 cursor-grab active:cursor-grabbing"
       cdkDrag
       [cdkDragData]="task()"
+      (click)="onClick()"
+      (cdkDragStarted)="isDragging.set(true)"
+      (cdkDragEnded)="isDragging.set(false)"
     >
       <p class="text-sm font-medium text-gray-900">{{ task().title }}</p>
       <div class="mt-2 flex flex-wrap items-center gap-2">
@@ -40,6 +42,14 @@ import { Task } from '../task.model';
 export class TaskCardComponent {
     readonly task = input.required<Task>();
     readonly select = output<Task>();
+
+    readonly isDragging = signal(false);
+
+    onClick(): void {
+        if (!this.isDragging()) {
+            this.select.emit(this.task());
+        }
+    }
 
     priorityClasses(): string {
         switch (this.task().priority) {
